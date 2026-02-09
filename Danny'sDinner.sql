@@ -34,3 +34,8 @@ select customer_id,sum(m.price) as total_spent_amount,count(*) as total_items fr
 
 -- 9.  If each $1 spent equates to 10 points and sushi has a 2x points multiplier - how many points would each customer have?
 select customer_id,sum(case when s.product_id=1 then 20*price else 10*price end) as spent_amt from sales s join menu m on s.product_id=m.product_id group by customer_id order by customer_id asc;
+
+-- 10. In the first week after a customer joins the program (including their join date) they earn 2x points on all items, not just sushi - how many points do customer A and B have at the end of January?
+select s.customer_id,sum(case when (s.order_date-m.join_date) between 0 and 7 then 20*me.price else 0 end) as total_amt
+from sales s join members m on m.customer_id=s.customer_id 
+join menu me on me.product_id=s.product_id group by s.customer_id;
