@@ -23,3 +23,7 @@ with intermediateTable as (select m.customer_id,s.product_id,s.order_date-m.join
 finalTable as (select customer_id,i.product_id,product_name,dense_rank() over (partition by customer_id order by ordering asc) as rnk from intermediateTable i join menu m on i.product_id=m.product_id)
 select customer_id,product_name from finalTable where rnk=1;
 
+-- 7. Which item was purchased just before the customer became a member?
+with intermediateTable as (select m.customer_id,s.product_id,s.order_date-m.join_date as ordering from members m join sales s on m.customer_id=s.customer_id where s.order_date<m.join_date order by ordering desc),
+finalTable as (select customer_id,i.product_id,product_name,ordering,dense_rank() over (partition by customer_id order by ordering desc) as rnk from intermediateTable i join menu m on i.product_id=m.product_id)
+select customer_id,product_name from finalTable where rnk=1;
