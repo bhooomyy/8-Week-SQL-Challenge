@@ -13,3 +13,8 @@ select tab.customer_id,m.product_name from tab join menu m on tab.product_id=m.p
 with subTable as (select product_id,count(*) as cnt from sales group by product_id order by cnt desc limit 1)
 select m.product_name,s.cnt from subTable s join menu m on s.product_id=m.product_id;
 
+-- 5. Which item was the most popular for each customer?
+with intermediateTable as(select customer_id,product_id,count(*) as cnt from sales group by customer_id,product_id order by cnt desc),
+finalTable as(select customer_id,product_id,cnt,dense_rank() over (partition by customer_id order by cnt desc)as rnk from intermediateTable)
+select f.customer_id,product_name,cnt from finalTable f join menu m on f.product_id=m.product_id where rnk=1;
+
