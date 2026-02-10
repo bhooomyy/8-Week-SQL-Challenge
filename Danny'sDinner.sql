@@ -39,3 +39,6 @@ select customer_id,sum(case when s.product_id=1 then 20*price else 10*price end)
 select s.customer_id,sum(case when (s.order_date-m.join_date) between 0 and 7 then 20*me.price else 0 end) as total_amt
 from sales s join members m on m.customer_id=s.customer_id 
 join menu me on me.product_id=s.product_id group by s.customer_id;
+
+--Bonus Question 1
+select s.customer_id,s.order_date,m.product_name,m.price,(case when s.order_date-member.join_date>=0 then 'Y' else 'N' end)as member from sales s join menu m on s.product_id=m.product_id join members member on s.customer_id=member.customer_id order by member.customer_id,s.order_date;
