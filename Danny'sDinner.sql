@@ -41,4 +41,5 @@ from sales s join members m on m.customer_id=s.customer_id
 join menu me on me.product_id=s.product_id group by s.customer_id;
 
 --Bonus Question 1
-select s.customer_id,s.order_date,m.product_name,m.price,(case when s.order_date-member.join_date>=0 then 'Y' else 'N' end)as member from sales s join menu m on s.product_id=m.product_id join members member on s.customer_id=member.customer_id order by member.customer_id,s.order_date;
+select s.customer_id,s.order_date,m.product_name,m.price,(case when s.order_date-member.join_date>=0 then 'Y' else 'N' end)as member from sales s join menu m on s.product_id=m.product_id left join members member on s.customer_id=member.customer_id order by member.customer_id,s.order_date;
+--Bonus Question 2
