@@ -27,3 +27,6 @@ select runner_id,count(*) as total_orders_delivered from runner_orders where dur
 --How many of each type of pizza was delivered?
 with intermediateTable as (select pizza_id,count(pizza_id) as cnt_of_pizza from customer_orders c join runner_orders r on c.order_id=r.order_id where duration not like ' ' group by pizza_id order by pizza_id asc)
 select i.pizza_id,p.pizza_name,i.cnt_of_pizza from intermediateTable i join pizza_names p on i.pizza_id=p.pizza_id;
+
+--How many Vegetarian and Meatlovers were ordered by each customer?
+select customer_id,pizza_name,count(c.pizza_id) from customer_orders c join pizza_names p on c.pizza_id=p.pizza_id group by customer_id,pizza_name order by customer_id asc;
