@@ -56,3 +56,12 @@ select TO_CHAR(order_time, 'Day') as day_of_week,count(order_id) as cnt_pizza fr
 --Queries 2
 --How many runners signed up for each 1 week period? (i.e. week starts 2021-01-01)
 select extract(week from registration_date) as registration_week,count(runner_id) as cnt_runner from runners group by extract(week from registration_date) order by registration_week;
+
+--What was the average time in minutes it took for each runner to arrive at the Pizza Runner HQ to pickup the order?
+--select order_time::timestamp from customer_orders;
+--select pickup_time::time from runner_orders where pickup_time is not NULL and pickup_time <>'' and pickup_time<>' ';
+select 
+r.runner_id,
+round(avg(extract(epoch from (r.pickup_time::timestamp - c.order_time::timestamp))/60)) AS time_diff 
+from customer_orders c join runner_orders r on c.order_id=r.order_id 
+where pickup_time is not NULL and pickup_time <>'' and pickup_time<>' ' group by r.runner_id order by runner_id;
