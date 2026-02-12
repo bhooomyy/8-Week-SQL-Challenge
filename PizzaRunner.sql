@@ -5,3 +5,11 @@ extras=(case when extras is NULL or extras LIKE 'null' then ' ' else extras end)
 
 select * from customer_orders;
 
+update runner_orders
+set
+pickup_time=(case when pickup_time is null or pickup_time like 'null' then ' ' else pickup_time end),
+distance=(case when distance like 'null' then ' ' else replace(distance,'km','') end),
+duration=(case when duration like 'null' then ' ' else replace(replace(replace(duration,'mins',''),'minutes',''),'minute','') end),
+cancellation=(case when cancellation is null or cancellation like 'null' then ' ' else cancellation end);
+
+select * from runner_orders;
