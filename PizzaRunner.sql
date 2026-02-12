@@ -1,16 +1,16 @@
 update customer_orders 
 set 
-exclusions=(case when exclusions is NULL or exclusions LIKE 'null' then ' ' else exclusions end),
-extras=(case when extras is NULL or extras LIKE 'null' then ' ' else extras end);
+exclusions=(case when exclusions is NULL or exclusions LIKE 'null' then '' else exclusions end),
+extras=(case when extras is NULL or extras LIKE 'null' then '' else extras end);
 
 select * from customer_orders;
 
 update runner_orders
 set
 pickup_time=(case when pickup_time is null or pickup_time like 'null' then ' ' else pickup_time end),
-distance=(case when distance like 'null' then ' ' else replace(distance,'km','') end),
-duration=(case when duration like 'null' then ' ' else replace(replace(replace(duration,'mins',''),'minutes',''),'minute','') end),
-cancellation=(case when cancellation is null or cancellation like 'null' then ' ' else cancellation end);
+distance=(case when distance like 'null' then '' else replace(distance,'km','') end),
+duration=(case when duration like 'null' then '' else replace(replace(replace(duration,'mins',''),'minutes',''),'minute','') end),
+cancellation=(case when cancellation is null or cancellation like 'null' then '' else cancellation end);
 
 select * from runner_orders;
 
@@ -33,3 +33,11 @@ select customer_id,pizza_name,count(c.pizza_id) from customer_orders c join pizz
 
 --What was the maximum number of pizzas delivered in a single order?
 select max(max_delivered_pizza) as max_delivered_pizza from (select count(order_id) as max_delivered_pizza from customer_orders group by order_id)t;
+
+--For each customer, how many delivered pizzas had at least 1 change and how many had 	   --no changes?
+select 
+c.customer_id,
+sum(case when c.exclusions<>'' or c.extras<>'' then 1 else 0 end) as atleast_one_change, 
+sum(case when c.exclusions='' and c.extras='' then 1 else 0 end) as no_change 
+from customer_orders c join runner_orders r on c.order_id=r.order_id 
+where r.distance!='' group by c.customer_id order by c.customer_id;
