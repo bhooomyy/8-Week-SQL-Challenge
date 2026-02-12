@@ -18,3 +18,5 @@ select * from runner_orders;
 --How many pizzas were ordered?
 select count(*) from customer_orders;
 
+--How many unique customer orders were made?
+select count(distinct order_id) from customer_orders;
