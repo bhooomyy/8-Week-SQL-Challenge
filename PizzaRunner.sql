@@ -30,3 +30,6 @@ select i.pizza_id,p.pizza_name,i.cnt_of_pizza from intermediateTable i join pizz
 
 --How many Vegetarian and Meatlovers were ordered by each customer?
 select customer_id,pizza_name,count(c.pizza_id) from customer_orders c join pizza_names p on c.pizza_id=p.pizza_id group by customer_id,pizza_name order by customer_id asc;
+
+--What was the maximum number of pizzas delivered in a single order?
+select max(max_delivered_pizza) as max_delivered_pizza from (select count(order_id) as max_delivered_pizza from customer_orders group by order_id)t;
