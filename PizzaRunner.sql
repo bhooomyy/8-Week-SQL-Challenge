@@ -47,3 +47,6 @@ select count(pizza_id) as delivered_pizza_with_exlusions_extras from customer_or
 
 --What was the total volume of pizzas ordered for each hour of the day?
 select extract(hour from order_time) as hour_of_day,count(order_id) as cnt_pizza from customer_orders group by extract(hour from order_time) order by hour_of_day asc;
+
+--What was the volume of orders for each day of the week?
+select TO_CHAR(order_time, 'Day') as day_of_week,count(order_id) as cnt_pizza from customer_orders group by TO_CHAR(order_time, 'Day') order by cnt_pizza desc;
