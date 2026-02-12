@@ -24,3 +24,6 @@ select count(distinct order_id) from customer_orders;
 --How many successful orders were delivered by each runner?
 select runner_id,count(*) as total_orders_delivered from runner_orders where duration  not like ' ' group by runner_id order by runner_id asc;
 
+--How many of each type of pizza was delivered?
+with intermediateTable as (select pizza_id,count(pizza_id) as cnt_of_pizza from customer_orders c join runner_orders r on c.order_id=r.order_id where duration not like ' ' group by pizza_id order by pizza_id asc)
+select i.pizza_id,p.pizza_name,i.cnt_of_pizza from intermediateTable i join pizza_names p on i.pizza_id=p.pizza_id;
