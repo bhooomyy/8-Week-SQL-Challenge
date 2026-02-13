@@ -85,3 +85,15 @@ alter table runner_orders
 alter column distance type float using distance::float;
 select c.customer_id,round(avg(r.distance)) as avg_distance from customer_orders c  join runner_orders r on c.order_id=r.order_id group by customer_id order by customer_id;
 
+--What was the difference between the longest and shortest delivery times for all orders?
+/*select 
+c.order_id,
+round(extract(epoch from (r.pickup_time::timestamp - c.order_time::timestamp))/60,2) AS spent_time 
+from customer_orders c join runner_orders r on c.order_id=r.order_id
+where pickup_time is not NULL and pickup_time <>'' and pickup_time<>' ')*/
+update runner_orders
+set duration = null
+where duration = '' OR duration LIKE 'null';
+alter table runner_orders
+alter column duration type float using duration::float;
+select max(duration)-min(duration) as max_min_delivery_time_differance from 
