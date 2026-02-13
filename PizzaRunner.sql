@@ -115,3 +115,16 @@ round(100 * sum(case when distance is null then 0 else 1 end) / count(*), 0) as 
 from runner_orders
 group by runner_id
 order by runner_id;
+
+-- Queries 3
+--What are the standard ingredients for each pizza?
+create table pizza_recipes_normalized(
+"pizza_id" INT,
+"toppings" INT);
+
+insert into pizza_recipes_normalized(pizza_id,toppings)
+select pizza_id,cast(topping as int) as toppings
+from pizza_recipes,
+lateral unnest(string_to_array(toppings,', ')) as t(topping);
+
+select pizza_name,string_agg(pt.topping_name,', ')as topping_list from pizza_names pn join pizza_recipes_normalized prn on pn.pizza_id=prn.pizza_id join pizza_toppings pt on prn.toppings=pt.topping_id group by pn.pizza_name order by pn.pizza_name;
