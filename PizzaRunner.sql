@@ -128,3 +128,19 @@ from pizza_recipes,
 lateral unnest(string_to_array(toppings,', ')) as t(topping);
 
 select pizza_name,string_agg(pt.topping_name,', ')as topping_list from pizza_names pn join pizza_recipes_normalized prn on pn.pizza_id=prn.pizza_id join pizza_toppings pt on prn.toppings=pt.topping_id group by pn.pizza_name order by pn.pizza_name;
+
+
+--What was the most commonly added extra?
+create table customer_orders_normalized (
+"order_id" INT,
+"customer_id" INT,
+"pizza_id" INT,
+"exclusions" INT,
+"extras" INT,
+"order_time" timestamp);
+insert into customer_orders_normalized (order_id,customer_id,pizza_id,exclusions,extras,order_time)
+select cast(order_id as int),cast(customer_id as int),cast(pizza_id as int),nullif(e.exclusions, '')::int,nullif(x.extras, '')::int,cast(order_time as timestamp) from customer_orders 
+left join lateral unnest(string_to_array(exclusions,',')) as e(exclusions) on true 
+left join lateral unnest(string_to_array(extras,',')) as x(extras) on true;
+
+select extras,topping_name,count(distinct order_id) from customer_orders_normalized c join pizza_toppings pt on c.extras=pt.topping_id  where extras is not null group by extras,topping_name order by extras asc;
