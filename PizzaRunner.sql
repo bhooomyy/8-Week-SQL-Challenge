@@ -159,3 +159,24 @@ select o.exclusions,pt.topping_name,count(o.exclusions) as common_exclusions
 from order_exclusions o join pizza_toppings pt on o.exclusions=pt.topping_id 
 group by o.exclusions,pt.topping_name order by common_exclusions desc;
 
+
+/*Generate an order item for each record in the customers_orders table in the format of one of the following:
+Meat Lovers
+Meat Lovers - Exclude Beef
+Meat Lovers - Extra Bacon
+Meat Lovers - Exclude Cheese, Bacon - Extra Mushroom, Peppers*/
+select c.order_id,
+c.pizza_id,
+exclusions,
+extras,
+(case when c.pizza_id=1 and exclusions like '2, 6' and extras like '1, 4' then 'Meat Lovers - Exclude BBQ Sauce, Mushrooms - Extra Bacon, Cheese' 
+when c.pizza_id=1 and exclusions like '4' and extras like '1, 5' then 'Meat Lovers - Exclude Cheese - Extras Bacon, Chicken' 
+when c.pizza_id=1 and extras like '1' then 'Meat Lovers - Extra Bacon' 
+when c.pizza_id=1 and exclusions like '4' then 'Meat Lovers - Exclude Cheese' 
+when c.pizza_id=1 then 'Meat Lovers'
+when c.pizza_id=2 and extras like '1' then 'Veg Lovers - Extra Bacon' 
+when c.pizza_id=2 and exclusions like '4' then 'Veg Lovers - Exclude Cheese'
+when c.pizza_id=2 then 'Veg Lovers' end)
+from customer_orders c join pizza_names pn on c.pizza_id=pn.pizza_id;
+
+
