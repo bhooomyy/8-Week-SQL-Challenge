@@ -131,16 +131,31 @@ select pizza_name,string_agg(pt.topping_name,', ')as topping_list from pizza_nam
 
 
 --What was the most commonly added extra?
-create table customer_orders_normalized (
-"order_id" INT,
-"customer_id" INT,
-"pizza_id" INT,
-"exclusions" INT,
-"extras" INT,
-"order_time" timestamp);
-insert into customer_orders_normalized (order_id,customer_id,pizza_id,exclusions,extras,order_time)
-select cast(order_id as int),cast(customer_id as int),cast(pizza_id as int),nullif(e.exclusions, '')::int,nullif(x.extras, '')::int,cast(order_time as timestamp) from customer_orders 
-left join lateral unnest(string_to_array(exclusions,',')) as e(exclusions) on true 
-left join lateral unnest(string_to_array(extras,',')) as x(extras) on true;
+create table order_extras(
+order_id int,
+extras int
+);
+insert into order_extras(order_id,extras)
+select c.order_id,x.extras::int from customer_orders c 
+join lateral unnest(string_to_array(c.extras,',')) as x(extras) on true 
+where c.extras is not null and c.extras<> '';
 
-select extras,topping_name,count(distinct order_id) from customer_orders_normalized c join pizza_toppings pt on c.extras=pt.topping_id  where extras is not null group by extras,topping_name order by extras asc;
+select o.extras,pt.topping_name,count(o.extras) as common_extras 
+from order_extras o join pizza_toppings pt on o.extras=pt.topping_id 
+group by o.extras,pt.topping_name 
+order by common_extras desc;
+
+--What was the most common exclusion?
+create table order_exclusions(
+order_id int,
+exclusions int
+);
+insert into order_exclusions(order_id,exclusions)
+select c.order_id,e.exclusion::int from customer_orders c 
+join lateral unnest(string_to_array(c.exclusions,',')) as e(exclusion) on true 
+where c.exclusions is not null and c.exclusions<> '';
+
+select o.exclusions,pt.topping_name,count(o.exclusions) as common_exclusions 
+from order_exclusions o join pizza_toppings pt on o.exclusions=pt.topping_id 
+group by o.exclusions,pt.topping_name order by common_exclusions desc;
+
