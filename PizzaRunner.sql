@@ -14,7 +14,13 @@ cancellation=(case when cancellation is null or cancellation like 'null' then ''
 
 select * from runner_orders;
 
--- Queries
+
+
+
+
+
+
+-- Queries [Pizza Matrics]
 --How many pizzas were ordered?
 select count(*) from customer_orders;
 
@@ -53,7 +59,13 @@ select TO_CHAR(order_time, 'Day') as day_of_week,count(order_id) as cnt_pizza fr
 
 
 
---Queries 2
+
+
+
+
+
+
+--Queries 2 [Runner and customer experience]
 --How many runners signed up for each 1 week period? (i.e. week starts 2021-01-01)
 select extract(week from registration_date) as registration_week,count(runner_id) as cnt_runner from runners group by extract(week from registration_date) order by registration_week;
 
@@ -116,7 +128,14 @@ from runner_orders
 group by runner_id
 order by runner_id;
 
--- Queries 3
+
+
+
+
+
+
+
+-- Queries 3 [Ingradiants Optimizarion]
 --What are the standard ingredients for each pizza?
 create table pizza_recipes_normalized(
 "pizza_id" INT,
@@ -273,3 +292,92 @@ join pizza_toppings pt
   on at.topping_id = pt.topping_id
 group by pt.topping_name
 order by total_quantity desc;
+
+
+
+
+
+
+
+
+-- Queires 4 [Pricing and Ratings]
+--If a Meat Lovers pizza costs $12 and Vegetarian costs $10 and there were no charges for changes - how much money has Pizza Runner made so far if there are no delivery fees?
+select 
+sum(case when pizza_id=1 then 12 else 10 end) as total_earned_money 
+from runner_orders r join customer_orders c on r.order_id=c.order_id 
+where distance is not null;
+
+select 
+runner_id,
+count(runner_id) as completed_orders, 
+sum(case when pizza_id=1 then 12 else 10 end) as total_earned_money 
+from runner_orders r join customer_orders c on r.order_id=c.order_id 
+where distance is not null  
+group by runner_id;
+
+
+--What if there was an additional $1 charge for any pizza extras?
+	--Add cheese is $1 extra
+select 
+sum(case when pizza_id=1 and extras <> '' then 13 
+    when pizza_id=1 then 12 
+    when pizza_id=2 and extras <> '' then 11 
+    else 10 end) as total_earned_money 
+from runner_orders r join customer_orders c on r.order_id=c.order_id 
+where distance is not null;
+
+
+--The Pizza Runner team now wants to add an additional ratings system that allows customers to rate their runner, how would you design an additional table for this new dataset - generate a schema for this new table and insert your own data for ratings for each successful customer order between 1 to 5.
+create table ratings (
+order_id integer,
+rating integer);
+
+insert into ratings
+(order_id, rating)
+values(1,3),(2,5),(3,3),(4,1),(5,5),(7,3),(8,4),(10,3);
+
+
+/*Using your newly generated table - can you join all of the information together to form a table which has the following information for successful deliveries?
+customer_id
+order_id
+runner_id
+rating
+order_time
+pickup_time
+Time between order and pickup
+Delivery duration
+Average speed
+Total number of pizzas*/
+select 
+c.customer_id,
+r.order_id, 
+r.runner_id,
+rate.rating,
+c.order_time, 
+r.pickup_time, 
+(pickup_time::timestamp - order_time::timestamp) as timebetween_order_and_pickup,duration,
+avg(distance/duration) as average_speed, 
+count(*) as total_pizzas 
+from runner_orders r join customer_orders c on r.order_id=c.order_id 
+join ratings rate on r.order_id=rate.order_id
+where r.distance is not null and r.pickup_time is not null 
+group by c.customer_id, r.order_id, r.runner_id, rate.rating, c.order_time, r.pickup_time, r.distance, r.duration
+order by r.order_id;
+
+
+ --If a Meat Lovers pizza was $12 and Vegetarian $10 fixed prices with no cost for extras and each runner is paid $0.30 per kilometre traveled - how much money does Pizza Runner have left over after these deliveries?
+with total_earned_money as (
+select 
+sum(case when pizza_id=1 then 12 else 10 end) as total_earned_money 
+from runner_orders r join customer_orders c on r.order_id=c.order_id 
+where distance is not null),
+  
+travel_cost as (
+  select 
+  sum(cast(distance as float)*0.30) as total_travel_cost 
+  from runner_orders)
+  
+select 
+    te.total_earned_money - tc.total_travel_cost as money_left
+from total_earned_money te
+cross join travel_cost tc;
