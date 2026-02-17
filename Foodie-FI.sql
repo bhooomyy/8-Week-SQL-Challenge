@@ -70,3 +70,20 @@ from next_plan
 where next_plan_id is not null and plan_id=0 
 group by next_plan_id 
 order by next_plan_id;
+
+--7. What is the customer count and percentage breakdown of all 5 plan_name values at 2020-12-31?
+with active_plan as(select 
+customer_id,
+s.plan_id,
+plan_name,
+row_number() over (partition by customer_id order by start_date desc) as rnk
+from subscriptions s join plans p on s.plan_id=p.plan_id
+where start_date<='2020-12-31')
+
+select plan_name,
+count(*) as cnt_customers,
+round((100.0*count(*))/(select count(distinct customer_id) from subscriptions),1)::text||'%' as percentage_cnt_customers 
+from active_plan 
+where rnk=1 
+group by plan_name
+order by cnt_customers desc;
