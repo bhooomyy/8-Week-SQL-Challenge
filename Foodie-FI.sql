@@ -9,3 +9,13 @@ from subscriptions
 where plan_id=0 
 group by extract(month from start_date);
 
+--3. What plan start_date values occur after the year 2020 for our dataset? Show the breakdown by count of events for each plan_name
+select 
+s.plan_id,
+plan_name,
+count(s.plan_id) as cnt_of_events 
+from subscriptions s join plans p on p.plan_id=s.plan_id 
+where extract(year from start_date)>2020 
+group by s.plan_id,plan_name 
+order by s.plan_id asc; 
+
