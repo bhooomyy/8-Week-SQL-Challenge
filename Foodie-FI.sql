@@ -130,3 +130,28 @@ bins as(
   from bins
   group by avg_days_to_upgrade
   order by avg_days_to_upgrade;
+
+
+  --11. How many customers downgraded from a pro monthly to a basic monthly plan in 2020?
+  with ordered_plans AS (
+    select 
+        customer_id,
+        plan_id,
+        start_date,
+        lead(plan_id) over (
+            partition by customer_id
+            order by start_date
+        ) as next_plan,
+        lead(start_date) over (
+            partition by customer_id
+            order by start_date
+        ) AS next_start_date
+    from subscriptions
+)
+
+select 
+    count(distinct customer_id) as downgrade_count
+from ordered_plans
+where plan_id = 2        
+  and next_plan = 1      
+  and extract(year from next_start_date)=2020;
