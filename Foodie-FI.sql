@@ -19,3 +19,24 @@ where extract(year from start_date)>2020
 group by s.plan_id,plan_name 
 order by s.plan_id asc; 
 
+--4. What is the customer count and percentage of customers who have churned rounded to 1 decimal place?
+/*with churn_cnt as (select 
+count(*) as churn_cnt 
+from subscriptions where plan_id=4),
+
+total_cnt as(
+select 
+  count(distinct customer_id) as total_cnt
+  from subscriptions)
+
+select 
+churn_cnt,
+round(((100.0*churn_cnt)/(total_cnt)),2)::text||'%' as churn_percentage 
+from churn_cnt cross join total_cnt;
+*/
+select 
+count(customer_id) as churn_cnt,
+round((100.0*count(distinct customer_id))/(select count(distinct customer_id) from subscriptions),2)::text||'%' as churn_percentage 
+from subscriptions 
+where plan_id=4;
+
