@@ -9,3 +9,11 @@ r.region_name,
 count(distinct node_id) as cnt_node 
 from customer_nodes c join regions r on c.region_id=r.region_id
 group by r.region_name;
+
+-- 3. How many customers are allocated to each region?
+select 
+r.region_name,
+count(distinct customer_id) as cnt_node 
+from customer_nodes c join regions r on c.region_id=r.region_id
+group by r.region_name;
+
