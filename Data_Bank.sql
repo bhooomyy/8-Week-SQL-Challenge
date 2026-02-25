@@ -73,3 +73,16 @@ count(*) transaction_cnt ,
 sum(txn_amount) as total_amt 
 from customer_transactions 
 group by txn_type;
+
+-- 2. What is the average total historical deposit counts and amounts for all customers?
+with table1 as (select 
+                customer_id,
+                count(*) as total_cnt,
+                sum(txn_amount) as total_amt  
+                from customer_transactions 
+                where txn_type='deposit' 
+                group by customer_id)
+select 
+round(avg(total_cnt)) as avg_total_cnt,
+round(avg(total_amt)) as avg_total_amt 
+from table1;
