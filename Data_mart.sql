@@ -124,3 +124,30 @@ from monthly_sales m
 join total_monthly_sales t
     on m.cal_year = t.cal_year and m.month_number = t.month_number
 order by cal_year, month_number, platform;
+
+--What is the percentage of sales by demographic for each year in the dataset?
+with demographic_sales as (
+  select 
+    calendar_year, 
+    demographic, 
+    sum(sales) as yearly_sales
+  from clean_weekly_sales
+  group by calendar_year, demographic
+)
+
+select 
+  calendar_year, 
+  round(100 * max 
+    (case 
+      when demographic = 'Couples' then yearly_sales else null end)
+    / sum(yearly_sales),2) as couples_percentage,
+  ROUND(100 * max 
+    (case 
+      when demographic = 'Families' then yearly_sales else null end)
+    / sum(yearly_sales),2) as families_percentage,
+  ROUND(100 * max 
+    (case 
+      when demographic = 'unknown' then yearly_sales else null end)
+    / sum(yearly_sales),2) as unknown_percentage
+from demographic_sales
+group by calendar_year;
