@@ -1,4 +1,4 @@
-# Foodie-Fi Case Study
+# Foodie-Fi Case Study | [Link](https://8weeksqlchallenge.com/case-study-3/)
 
 ## Introduction
 
