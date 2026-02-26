@@ -14,3 +14,11 @@ add column week_number integer;
 -- update weekly_sales set week_number = ceil(extract(day from week_date) / 7.0);
 update weekly_sales
 set week_number=ceil(extract(doy from week_date) / 7.0);
+
+
+-- Add a month_number with the calendar month for each week_date value as the 3rd column
+alter table weekly_sales
+add column month_number integer;
+
+update weekly_sales
+set month_number=extract(month from week_date);
