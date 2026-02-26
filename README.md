@@ -1,4 +1,4 @@
-# SQL Project WEEK 1 - Danny's Dinner 
+## SQL Project WEEK 1 - Danny's Dinner 🍽️ | [Link](https://8weeksqlchallenge.com/case-study-1/)
 
 **Danny's Dinner** is a subscription-based restaurant dataset where we analyze customer purchases, membership behavior, and loyalty points. The goal of this project was to use **advanced SQL techniques** to extract insights from transactional and membership data, simulating real-world business analytics scenarios.
 
@@ -34,7 +34,7 @@ The Danny’s Dinner project is an example of **end-to-end SQL analytics**, from
 
 
 
-# SQL Project WEEK 2 - Pizza Runner
+## SQL Project WEEK 2 - Pizza Runner 🍕🏃 | [Link](https://8weeksqlchallenge.com/case-study-2/)
 **Pizza Runner** is a delivery-focused dataset that tracks customer orders, pizza details, runner assignments, and delivery logistics. The goal of this project was to leverage **advanced SQL skills** to clean, transform, and analyze complex transactional and operational data, producing actionable insights for business optimization.
 
 The dataset included multiple tables:
@@ -86,7 +86,7 @@ The **Pizza Runner project** demonstrates a full **end-to-end SQL workflow**: fr
 
 
 
-# SQL Project WEEK 3 - Foodie-Fi
+## SQL Project WEEK 3 - Foodie-Fi 🥗 | [Link](https://8weeksqlchallenge.com/case-study-3/)
 **Foodie-Fi** is a subscription-based food delivery platform dataset, tracking customer plans, trials, upgrades, downgrades, and churn. The goal of this project was to analyze customer subscription behavior and transitions between plans using SQL.
 
 The dataset included:
@@ -117,7 +117,7 @@ This project demonstrates the use of SQL to monitor **subscription behavior**, c
 
 
 
-# SQL Project WEEK 4 - DataBank
+## SQL Project WEEK 4 - DataBank 💾 | [Link](https://8weeksqlchallenge.com/case-study-4/)
 **DataBank** is a financial services dataset tracking customer nodes and transaction history. The project focused on exploring **node allocations** and **customer transaction patterns** to derive operational and financial insights.
 
 The dataset included:
@@ -147,7 +147,7 @@ The dataset included:
 The DataBank project demonstrates SQL-driven exploration of customer behavior and operational metrics. Insights support **resource planning, customer engagement analysis, and transactional behavior monitoring**.
 
 
-# SQL Project WEEK 5 - Data Mart
+## SQL Project WEEK 5 - Data Mart 🛒 | [Link](https://8weeksqlchallenge.com/case-study-5/)
 **Data Mart** is a retail transactional dataset that tracks weekly sales across regions, platforms, and customer segments. The focus of this project was to **clean, structure, and enrich the dataset** to make it suitable for business analytics.
 
 The dataset included:
