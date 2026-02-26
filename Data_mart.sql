@@ -45,3 +45,16 @@ set age_band=(case when age_band='1' then 'Young Adults'
 when age_band='2' then 'Middle Aged'
 when age_band='3' or age_band='4' then 'Retirees' 
 else 'unknown' end);
+
+-- Add a new demographic column using the following mapping for the first letter in the segment values:
+alter table weekly_sales 
+add column demographic varchar(8);
+
+update  weekly_sales
+set demographic=(case when segment like 'null' or segment is null then 'null' 
+                 else substring(segment from 1 for 1) end);
+
+update weekly_sales
+set demographic=(case when demographic='C' then 'Couples'
+                when demographic='F' then 'Families' else 'unknown' end);
+  
